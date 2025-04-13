@@ -67,16 +67,18 @@ async def async_setup_entry(
         for description in ENERGY_PRICE_SENSORS
     )
 
-    async_add_entities([
-        ElviaMaxHourAverageSensor(coordinator, True),
-        ElviaMaxHourAverageSensor(coordinator, False),
-        ElviaMaxHourSensor(coordinator, True, 1),
-        ElviaMaxHourSensor(coordinator, True, 2),
-        ElviaMaxHourSensor(coordinator, True, 3),
-        ElviaMaxHourSensor(coordinator, False, 1),
-        ElviaMaxHourSensor(coordinator, False, 2),
-        ElviaMaxHourSensor(coordinator, False, 3),
-    ])
+    async_add_entities(
+        [
+            ElviaMaxHourAverageSensor(coordinator, True),
+            ElviaMaxHourAverageSensor(coordinator, False),
+            ElviaMaxHourSensor(coordinator, True, 1),
+            ElviaMaxHourSensor(coordinator, True, 2),
+            ElviaMaxHourSensor(coordinator, True, 3),
+            ElviaMaxHourSensor(coordinator, False, 1),
+            ElviaMaxHourSensor(coordinator, False, 2),
+            ElviaMaxHourSensor(coordinator, False, 3),
+        ]
+    )
 
 
 class ElviaSensor(CoordinatorEntity, SensorEntity):
@@ -94,13 +96,20 @@ class ElviaSensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Initialize."""
 
-        description.key = f"{key_prefix}_{description.key}"
+        new_key = f"{key_prefix}_{description.key}"
+        new_description = SensorEntityDescription(
+            key=new_key,
+            name=description.name,
+            icon=description.icon,
+            native_unit_of_measurement=description.native_unit_of_measurement,
+            state_class=description.state_class,
+        )
 
         super().__init__(coordinator)
         self.coordinator = coordinator
-        self.entity_description = description
-        self.attribute = self.entity_description.key.replace(f"{key_prefix}_", "")
-        self._attr_unique_id = f"{description.key}"
+        self.entity_description = new_description
+        self.attribute = description.key
+        self._attr_unique_id = f"{new_key}"
         self._attr_device_info = coordinator._attr_device_info
         self.update_from_data()
 
@@ -124,6 +133,7 @@ class ElviaCoordinatorSensor(ElviaSensor):
     def update_from_data(self) -> None:
         self.sensor_data = self.coordinator.__getattribute__(self.attribute)
 
+
 class ElviaEnergySensor(ElviaSensor):
     """Define a ElviaTariffTypeSensor entity."""
 
@@ -132,9 +142,8 @@ class ElviaEnergySensor(ElviaSensor):
 
     @property
     def extra_state_attributes(self):
-        return {
-            "daily_tariff": self.coordinator.tariff_prices
-        }
+        return {"daily_tariff": self.coordinator.tariff_prices}
+
 
 class ElviaMaxHourAverageSensor(ElviaSensor):
     """Define a ElviaMaxHourSensor entity."""
@@ -157,10 +166,11 @@ class ElviaMaxHourAverageSensor(ElviaSensor):
 
     @property
     def native_unit_of_measurement(self) -> str | None:
-        return self.coordinator.mapped_maxhours[self.month]['uom']
+        return self.coordinator.mapped_maxhours[self.month]["uom"]
 
     def update_from_data(self) -> None:
-        self.sensor_data = self.coordinator.mapped_maxhours[self.month]['average']
+        self.sensor_data = self.coordinator.mapped_maxhours[self.month]["average"]
+
 
 class ElviaMaxHourSensor(ElviaSensor):
     """Define a ElviaMaxHourSensor entity."""
@@ -184,15 +194,21 @@ class ElviaMaxHourSensor(ElviaSensor):
         super().__init__(coordinator, description, "elvia")
 
     def update_from_data(self) -> None:
-        self.sensor_data = self.coordinator.mapped_maxhours[self.month][self.sensor_index]['value']
+        self.sensor_data = self.coordinator.mapped_maxhours[self.month][
+            self.sensor_index
+        ]["value"]
 
     @property
     def native_unit_of_measurement(self) -> str | None:
-        return self.coordinator.mapped_maxhours[self.month][self.sensor_index]['uom']
+        return self.coordinator.mapped_maxhours[self.month][self.sensor_index]["uom"]
 
     @property
     def extra_state_attributes(self):
         return {
-            "startTime": self.coordinator.mapped_maxhours[self.month][self.sensor_index]['startTime'],
-            "endTime": self.coordinator.mapped_maxhours[self.month][self.sensor_index]['endTime']
+            "startTime": self.coordinator.mapped_maxhours[self.month][
+                self.sensor_index
+            ]["startTime"],
+            "endTime": self.coordinator.mapped_maxhours[self.month][self.sensor_index][
+                "endTime"
+            ],
         }
