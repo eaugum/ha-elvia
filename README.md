@@ -9,9 +9,9 @@ HomeAssistant-integration for Elvia
 
 ## Requirements
 
-- Metering point id. (Målepunkt-ID, not Målernummer) Log into [Elvia](https://www.elvia.no/minside) and find your ID.
-- API-key. Sign up for GridTariffAPI at [Elvia developer portal](https://elvia.portal.azure-api.net/) and you will receive an API-key via email. See [API-doc](https://assets.ctfassets.net/jbub5thfds15/1mF3J3xVf9400SDuwkChUC/a069a61a0257ba8c950432000bdefef3/Elvia_GridTariffAPI_for_smart_house_purposes_v1_1_20210212.doc.pdf) for more info.
-- Token. [Read how](https://www.elvia.no/smart-forbruk/alt-om-din-strommaler/api-for-malerverdier-tilgjengelig-i-pilot-na/)
+- **Metering point id.** (*Målepunkt-ID*, not *Målernummer*) Log into [Elvia](https://www.elvia.no/logg-inn/) and find your ID, or see it printed on your invoice.
+- **API-key.** Sign up at [Elvia developer portal](https://developers.elvia.no/), open `Products`, select `Grid Tariff`, enter a subscription name and press `Subscribe`. Your keys are available on `Profile`. See [API-doc](https://assets.ctfassets.net/jbub5thfds15/1mF3J3xVf9400SDuwkChUC/a069a61a0257ba8c950432000bdefef3/Elvia_GridTariffAPI_for_smart_house_purposes_v1_1_20210212.doc.pdf) for more info.
+- **Token.** [Read how](https://www.elvia.no/smart-forbruk/api-er-for-smartere-hjem-og-bedrifter/slik-kan-du-ta-i-bruk-metervalue-api/)
 
 ## Installation
 
